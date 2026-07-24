@@ -54,15 +54,3 @@ Demonstrates why regulations must be convex. We simulate a "Bad Agent" who mixes
 ├── meta_data/                  # Saved plots and assets
 └── README.md
 ```
-## Citation
-If you find this code or our theoretical framework useful, please cite our paper:
-```bash
-@article{Singh2026Incentive,
-  title={Incentive-Aware AI Regulations: A Credal Characterisation},
-  author={Singh, Anurag and Rodemann, Julian and Verma, Rajeev and Chau, Siu Lun and Muandet, Krikamol},
-  journal={arXiv preprint},
-  year={2026}
-}
-```
-## 🤝 Contributing
-We welcome discussions on the connection between Imprecise Probabilities, Mechanism Design, and AI Safety. Please feel free to open an issue or submit a pull request.
