@@ -1,20 +1,3 @@
-"""
-Credit-scoring regulation experiment: prohibiting use of a sensitive attribute.
-
-The regulation names a prohibited exemplar scorer P_bad (one that uses the
-protected attribute, fitted to biased lending history) and bans it together
-with every diluted version of it:
-
-    P_0 = { alpha P_bad + (1 - alpha) U : alpha in [0.5, 1] }
-
-a segment, hence closed and convex -- a credal set by construction. A provider
-cannot escape by randomising between the banned scorer and a coin flip.
-
-    python run_credit.py --dataset german
-    python run_credit.py --dataset taiwan
-    python run_credit.py --dataset synth      # offline smoke test
-"""
-
 from __future__ import annotations
 
 import argparse

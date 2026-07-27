@@ -1,24 +1,3 @@
-"""
-Data loaders for the credit-scoring regulation experiment.
-
-Each loader returns a triple ``(X, a, y)``:
-    X : pd.DataFrame  legitimate (non-sensitive) features only
-    a : np.ndarray    binary sensitive attribute in {0, 1}
-    y : np.ndarray    binary label, 1 = creditworthy / good credit
-
-The sensitive attribute is *excluded* from X by construction: a provider that
-"uses the sensitive attribute" must inject it explicitly (see providers.py),
-which makes non-compliance a deliberate, controllable act.
-
-Datasets
---------
-taiwan : UCI "Default of Credit Card Clients" (id=350, n=30000). A = SEX.
-german : UCI "Statlog German Credit Data" (id=144, n=1000). A = sex parsed
-         from the personal-status attribute (A91/A93/A94 male, A92/A95 female).
-synth  : Reproducible synthetic generator with the same schema. Offline
-         fallback so the pipeline is runnable without network access.
-"""
-
 from __future__ import annotations
 
 import numpy as np
@@ -34,14 +13,6 @@ LAST_FAILURE = None      # reason the most recent real-data load failed
 
 
 def _fail(msg: str):
-    """
-    Record and *print* a load failure.
-
-    Uses print rather than warnings.warn: Jupyter shows a given warning only
-    once per code location (``__warningregistry__``), so on a re-run of the
-    cell the reason would silently vanish and you would see nothing but the
-    fallback message.
-    """
     global LAST_FAILURE
     LAST_FAILURE = msg
     print(f"[data] !! {msg}")
@@ -133,18 +104,6 @@ def load_german():
 # --------------------------------------------------------------------------
 def load_synthetic(n: int = 30000, d: int = 12, seed: int = SEED,
                    beta_a: float = 0.8):
-    """
-    Synthetic credit data in which the protected attribute is *genuinely
-    predictive* -- which is the realistic regulatory situation.
-
-    Group membership both shifts a couple of legitimate features (legitimate
-    correlation) and has a direct effect ``beta_a`` on repayment. A model given
-    access to A therefore predicts better on the population as a whole, so the
-    regulator cannot detect its use from overall accuracy: it must look at the
-    counter-stereotypical applicants the shortcut is wrong about.
-
-    Set ``beta_a = 0`` for the degenerate case where A carries no extra signal.
-    """
     rng = np.random.default_rng(seed)
     a = rng.binomial(1, 0.5, size=n)
 
@@ -168,16 +127,6 @@ _LOADERS = {"taiwan": load_taiwan, "german": load_german}
 
 def load(name: str = "taiwan", allow_synthetic_fallback: bool = True,
          strict: bool = False):
-    """
-    Load a dataset by name ('taiwan', 'german', 'synth').
-
-    If the real dataset cannot be fetched and ``allow_synthetic_fallback`` is
-    True, returns the synthetic generator so the pipeline still runs; the
-    reason is always printed. Pass ``strict=True`` (or
-    ``allow_synthetic_fallback=False``) to raise instead of falling back --
-    use this when producing paper figures, so a silent fallback can never be
-    mistaken for a real-data run.
-    """
     if strict:
         allow_synthetic_fallback = False
     name = str(name).lower()
